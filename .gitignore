@@ -1,0 +1,9 @@
+*
+!/**/
+!*.*
+.vscode/
+.idea/
+*.o
+!Makefile
+!./line.o
+!solution/*

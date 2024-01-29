@@ -1,0 +1,4 @@
+{
+  "onCreateCommand": "./.devcontainer/setup.sh",
+  "image": "mcr.microsoft.com/vscode/devcontainers/cpp:ubuntu-22.04"
+}
