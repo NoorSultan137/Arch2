@@ -6,7 +6,8 @@
 void skipSpaces(const char **line) {
 
     // BEGIN STUDENT IMPLEMENTATION
-
+    while (**line == ' ')
+        (*line)++;
     // END STUDENT IMPLEMENTATION
 }
 
@@ -16,7 +17,8 @@ static bool isEnd(char c, char end) {
     bool res = false;
     
     // BEGIN STUDENT IMPLEMENTATION
-
+    if (c == end || c == '\0' || c == ' ')
+        res = true;
     // END STUDENT IMPLEMENTATION
 
     return res;
@@ -26,7 +28,12 @@ static bool isEnd(char c, char end) {
 static char getEnd(char c) {
 
     // BEGIN STUDENT IMPLEMENTATION
-
+    if (c == '\'')
+        return '\'';
+    else if (c == '\"')
+        return '\"';
+    else
+        return ' ';
     // END STUDENT IMPLEMENTATION
 
     return c;
@@ -41,20 +48,35 @@ static int parseToken(const char **line, char *token) {
     // BEGIN STUDENT IMPLEMENTATION
 
     // skip the quote character if the token is quoted
+    char end = getEnd(**line);
+    if (**line == '\'' || **line == '\"')
+        (*line)++;
 
     // while the end of the token was not reached
-    {
+    while (!isEnd((*line)[si], end)) {
         // unescape characters as needed
-
-        // copy the character to the destination token
+        if ((*line)[si] == '\\') {
+            si++;
+            if ((*line)[si] != '\0')
+                token[di++] = (*line)[si++];
+        } else {
+            // copy the character to the destination token
+            token[di++] = (*line)[si++];
+        }
     }
 
     // terminate the destination token string
+    token[di] = '\0';
 
     // skip the end quote character if the token is quoted
+    if (**line == '\'' || **line == '\"')
+        (*line)++;
 
     // move line forward as needed
+    while (!isEnd((*line)[si], end))
+        si++;
 
+    (*line) += si;
     // END STUDENT IMPLEMENTATION
 
     return di;
@@ -64,6 +86,29 @@ static int parseToken(const char **line, char *token) {
 void getToken(const char **line, char **token) {
 
     // BEGIN STUDENT IMPLEMENTATION
+    skipSpaces(line);
 
+    int tokenSize = 0;
+    while (!isEnd((*line)[tokenSize], ' ')) {
+        tokenSize++;
+    }
+
+    if (tokenSize == 0) {
+        *token = 0;
+        return;
+    }
+
+    *token = (char *)malloc((tokenSize + 1) * sizeof(char));
+    if (*token == 0) {
+        // Handle memory allocation error here
+        return;
+    }
+
+    for (int i = 0; i < tokenSize; i++) {
+        (*token)[i] = (*line)[i];
+    }
+    (*token)[tokenSize] = '\0';
+
+    *line += tokenSize;
     // END STUDENT IMPLEMENTATION
 }
