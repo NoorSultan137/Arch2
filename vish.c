@@ -14,7 +14,15 @@ const char *cd(char **tokens, const char *prompt) {
 
     // BEGIN STUDENT IMPLEMENTATION
 
-
+    if (tokens[1] != NULL) {
+        if (chdir(tokens[1]) != 0) {
+            perror("cd");
+        } else {
+            prompt = getPrompt();
+        }
+    } else {
+        printf("cd: missing argument\n");
+    }
     // END STUDENT IMPLEMENTATION
 
     tokens = NULL; // suppress unused parameter warning
