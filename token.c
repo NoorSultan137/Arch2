@@ -98,16 +98,16 @@ void getToken(const char **line, char **token) {
         return;
     }
 
-    *token = (char *)malloc((tokenSize + 1) * sizeof(char));
-    if (*token == 0) {
-        // Handle memory allocation error here
-        return;
-    }
-
+    // Define a fixed-size buffer for the token within the function scope
+    char tokenBuffer[tokenSize + 1];
+    // Copy the characters from line to tokenBuffer
     for (int i = 0; i < tokenSize; i++) {
-        (*token)[i] = (*line)[i];
+        tokenBuffer[i] = (*line)[i];
     }
-    (*token)[tokenSize] = '\0';
+    // Null-terminate the token buffer
+    tokenBuffer[tokenSize] = '\0';
+    // Assign the token buffer to the output token
+    *token = tokenBuffer;
 
     *line += tokenSize;
     // END STUDENT IMPLEMENTATION
