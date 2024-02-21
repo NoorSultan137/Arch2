@@ -10,17 +10,22 @@ static int parseTokens(const char **line, char **tokens) {
 
     // BEGIN STUDENT IMPLEMENTATION
 
-    // while the end of the line is not reached
-    {
-        // skip any spaces before the token
+    while (**line != '\0' && cnt < MAX_TOKENS - 1) {
+        skipSpaces(line);
 
-        // if the end of the line was not reached, get the next token
+        if (**line == '\0') {
+            break;
+        }
 
-        // skip any spaces after the token
+        int tokenSize = parseToken(line, tokens[cnt]);
+        if (tokenSize == 0) {
+            break;
+        }
+
+        cnt++;
     }
 
-    // terminate the tokens array with an extra null pointer
-
+    tokens[cnt] = 0;
     // END STUDENT IMPLEMENTATION
 
     return cnt;
@@ -32,7 +37,25 @@ int getTokens(const char *line, char ***tokens) {
     int cnt = 0;
 
     // BEGIN STUDENT IMPLEMENTATION
+    *tokens = (char **)malloc(MAX_TOKENS * sizeof(char *));
+    if (*tokens == 0) {
+        // Handle memory allocation error here
+        return 0;
+    }
 
+    const char *currentLine = line;
+    while (*currentLine != '\0' && cnt < MAX_TOKENS - 1) {
+        (*tokens)[cnt] = (char *)malloc((MAX_TOKEN_LEN + 1) * sizeof(char));
+        if ((*tokens)[cnt] == 0) {
+            // Handle memory allocation error here
+            freeTokens(tokens);
+            return 0;
+        }
+
+        cnt++;
+    }
+
+    cnt = parseTokens(&line, *tokens);
     // END STUDENT IMPLEMENTATION
 
     return cnt;
@@ -44,12 +67,12 @@ void freeTokens(char ***tokens) {
 
     // BEGIN STUDENT IMPLEMENTATION
 
-    // if there is anything to free
-    {
-        // free each token in the array
-
-        // free the token array
+    if (*tokens != 0) {
+        for (int i = 0; (*tokens)[i] != 0; i++) {
+            free((*tokens)[i]);
+        }
+        free(*tokens);
+        *tokens = 0;
     }
-
     // END STUDENT IMPLEMENTATION
 }
