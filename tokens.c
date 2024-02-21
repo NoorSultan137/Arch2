@@ -3,76 +3,71 @@
 #define MAX_TOKENS 50
 #define MAX_TOKEN_LEN 100
 
-// parse the given line into tokens and return the number of tokens
+// Parse the given line into tokens and return the number of tokens
 static int parseTokens(const char **line, char **tokens) {
-
     int cnt = 0;
+    const char *start = *line;
 
-    // BEGIN STUDENT IMPLEMENTATION
+    // Skip leading spaces
+    while (**line == ' ')
+        (*line)++;
 
+    // Extract tokens
     while (**line != '\0' && cnt < MAX_TOKENS - 1) {
-        skipSpaces(line);
+        const char *tokenStart = *line;
 
-        if (**line == '\0') {
-            break;
-        }
+        // Find token end
+        while (**line != '\0' && **line != ' ')
+            (*line)++;
 
-        int tokenSize = parseToken(line, tokens[cnt]);
-        if (tokenSize == 0) {
-            break;
-        }
+        // Copy token to tokens array
+        int tokenLen = *line - tokenStart;
+        for (int i = 0; i < tokenLen && i < MAX_TOKEN_LEN; i++)
+            tokens[cnt][i] = tokenStart[i];
+        tokens[cnt][tokenLen] = '\0';
 
         cnt++;
+
+        // Skip spaces until next token
+        while (**line == ' ')
+            (*line)++;
     }
 
+    // Null-terminate tokens array
     tokens[cnt] = 0;
-    // END STUDENT IMPLEMENTATION
+
+    // Restore line pointer
+    *line = start;
 
     return cnt;
 }
 
-// break the line into tokens
+// Break the line into tokens
 int getTokens(const char *line, char ***tokens) {
-
     int cnt = 0;
+    char *tokenArray[MAX_TOKENS];
 
-    // BEGIN STUDENT IMPLEMENTATION
-    *tokens = (char **)malloc(MAX_TOKENS * sizeof(char *));
-    if (*tokens == 0) {
-        // Handle memory allocation error here
-        return 0;
-    }
+    // Parse tokens
+    cnt = parseTokens(&line, tokenArray);
 
-    const char *currentLine = line;
-    while (*currentLine != '\0' && cnt < MAX_TOKENS - 1) {
-        (*tokens)[cnt] = (char *)malloc((MAX_TOKEN_LEN + 1) * sizeof(char));
-        if ((*tokens)[cnt] == 0) {
-            // Handle memory allocation error here
-            freeTokens(tokens);
-            return 0;
-        }
-
-        cnt++;
-    }
-
-    cnt = parseTokens(&line, *tokens);
-    // END STUDENT IMPLEMENTATION
+    // Copy tokens to output parameter
+    for (int i = 0; i < cnt; i++)
+        (*tokens)[i] = tokenArray[i];
+    (*tokens)[cnt] = 0;
 
     return cnt;
 }
 
-// free the memory allocated for the tokens
-
+// Free the memory allocated for the tokens
 void freeTokens(char ***tokens) {
-
-    // BEGIN STUDENT IMPLEMENTATION
-
-    if (*tokens != 0) {
-        for (int i = 0; (*tokens)[i] != 0; i++) {
-            free((*tokens)[i]);
+    // Loop through the token array and set each element to NULL
+    for (int i = 0; (*tokens)[i] != 0 && i < MAX_TOKENS; i++) {
+        // Loop through each character in the token and set it to '\0'
+        for (int j = 0; (*tokens)[i][j] != '\0' && j < MAX_TOKEN_LEN; j++) {
+            (*tokens)[i][j] = '\0';
         }
-        free(*tokens);
-        *tokens = 0;
+        // Set the pointer to NULL
+        (*tokens)[i] = 0;
     }
-    // END STUDENT IMPLEMENTATION
 }
+
