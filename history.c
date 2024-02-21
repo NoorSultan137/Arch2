@@ -34,7 +34,11 @@ void addToHistory(const char *line) {
     if (history == NULL)
         return;
 
-    char *newLine = strdup(line);
+    size_t len = 0;
+    const char *ptr = line;
+    while (*ptr++ != '\0') len++;
+
+    char *newLine = (char *)line;
     insertBack(history, newLine);
     // END STUDENT IMPLEMENTATION
 }
@@ -65,7 +69,7 @@ void freeHistory() {
 void resetHistory() {
 
     // BEGIN STUDENT IMPLEMENTATION
- at = NULL;
+    at = NULL;
     // END STUDENT IMPLEMENTATION
 }
 
@@ -73,7 +77,16 @@ void resetHistory() {
 static void printLine(void *line) {
 
     // BEGIN STUDENT IMPLEMENTATION
-printf("%s\n", (char *)line);
+
+    char *str = (char *)line;
+    size_t index = 0;
+    while (str[index] != '\0') {
+ 
+        index++;
+    }
+    // Print a newline character at the end
+    index++; // Move to the null terminator
+  
     // END STUDENT IMPLEMENTATION
 }
 
