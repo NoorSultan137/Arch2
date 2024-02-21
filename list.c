@@ -11,13 +11,11 @@ typedef struct node {
 
 // create a new node with the given data
 static node_t *newNode(void *data) {
-
     node_t *node = NULL;
 
     // BEGIN STUDENT IMPLEMENTATION
-    node = (node_t *)malloc(sizeof(node_t));
+    node = (node_t *)data;
     if (node != NULL) {
-        node->data = data;
         node->next = NULL;
         node->prev = NULL;
     }
@@ -28,7 +26,6 @@ static node_t *newNode(void *data) {
 
 // insert the node at the given position
 static void insertNode(node_t *node, node_t **at) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*at == NULL) {
         *at = node;
@@ -45,7 +42,6 @@ static void insertNode(node_t *node, node_t **at) {
 
 // detach the given node from the list and return it
 static node_t *detachNode(node_t **at) {
-
     // BEGIN STUDENT IMPLEMENTATION
     node_t *node = *at;
     if (node != NULL) {
@@ -57,55 +53,29 @@ static node_t *detachNode(node_t **at) {
     *at = NULL;
     return node;
     // END STUDENT IMPLEMENTATION
-
-    return *at;
-}
-
-// delete the given node from the list and return its data
-static void *deleteNode(node_t **at) {
-
-    void *data = NULL;
-
-    // BEGIN STUDENT IMPLEMENTATION
-    node_t *node = detachNode(at);
-    if (node != NULL) {
-        data = node->data;
-        free(node);
-    }
-    return data;
-    // END STUDENT IMPLEMENTATION
-
-    return data;
 }
 
 // move the given node to the given to given position using the given insert function
 static void moveNode(node_t **to, node_t **from, void (*insert)(node_t **, void *)) {
-
     // BEGIN STUDENT IMPLEMENTATION
     node_t *node = detachNode(from);
     if (node != NULL)
-        insert(to, node->data);
+        insert(to, node);
     // END STUDENT IMPLEMENTATION
 }
 
 // create a new empty list and return its head
 node_t **newList() {
-
     node_t **head = NULL;
-
     // BEGIN STUDENT IMPLEMENTATION
-    head = (node_t **)malloc(sizeof(node_t *));
-    if (head != NULL)
-        *head = NULL;
+    head = (node_t **)newNode(NULL);
     // END STUDENT IMPLEMENTATION
-
     return head;
 }
 
 // free the given list and nullify the head
 // note: freeData should not be null
 void freeList(node_t **head, void (*freeData)(void *)) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*head == NULL)
         return;
@@ -115,7 +85,6 @@ void freeList(node_t **head, void (*freeData)(void *)) {
         node_t *next = current->next;
         if (freeData != NULL)
             freeData(current->data);
-        free(current);
         current = next;
     }
     *head = NULL;
@@ -124,7 +93,6 @@ void freeList(node_t **head, void (*freeData)(void *)) {
 
 // move the head of the list to the next node
 void moveNext(node_t **head) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*head != NULL)
         *head = (*head)->next;
@@ -133,7 +101,6 @@ void moveNext(node_t **head) {
 
 // move the head of the head to the previous node
 void movePrev(node_t **head) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*head != NULL)
         *head = (*head)->prev;
@@ -142,47 +109,34 @@ void movePrev(node_t **head) {
 
 // return the node after the given node
 node_t *getNext(node_t *node) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (node != NULL)
         return node->next;
     return NULL;
     // END STUDENT IMPLEMENTATION
-
-    return NULL;
 }
 
 // return the node before the given node
 node_t *getPrev(node_t *node) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (node != NULL)
         return node->prev;
     return NULL;
     // END STUDENT IMPLEMENTATION
-
-    return NULL;
 }
 
 // return the data at the given node
 void *getData(node_t *node) {
-
-    void *data = NULL;
-
     // BEGIN STUDENT IMPLEMENTATION
     if (node != NULL)
         return node->data;
     return NULL;
     // END STUDENT IMPLEMENTATION
-
-    return data;
 }
 
 // set the data at the given node and return the old data
 void *setData(node_t *node, void *data) {
-
     void *oldData = NULL;
-
     // BEGIN STUDENT IMPLEMENTATION
     if (node != NULL) {
         oldData = node->data;
@@ -190,13 +144,10 @@ void *setData(node_t *node, void *data) {
     }
     return oldData;
     // END STUDENT IMPLEMENTATION
-
-    return oldData;
 }
 
 // insert a new node with the given data at the front of the list
 void insertFront(node_t **head, void *data) {
-
     // BEGIN STUDENT IMPLEMENTATION
     node_t *new_node = newNode(data);
     if (new_node != NULL) {
@@ -207,7 +158,6 @@ void insertFront(node_t **head, void *data) {
 
 // insert a new node with the given data at the back of the list
 void insertBack(node_t **head, void *data) {
-
     // BEGIN STUDENT IMPLEMENTATION
     node_t *new_node = newNode(data);
     if (new_node != NULL) {
@@ -227,9 +177,7 @@ void insertBack(node_t **head, void *data) {
 
 // delete the node at the front of the list and return its data
 void *deleteFront(node_t **head) {
-
     void *data = NULL;
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*head != NULL) {
         node_t *temp = *head;
@@ -238,19 +186,14 @@ void *deleteFront(node_t **head) {
             (*head)->prev = NULL;
         }
         data = temp->data;
-        free(temp);
     }
     return data;
     // END STUDENT IMPLEMENTATION
-
-    return data;
 }
 
 // delete the node at the back of the list and return its data
 void *deleteBack(node_t **head) {
-
     void *data = NULL;
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*head != NULL) {
         node_t *temp = *head;
@@ -261,17 +204,13 @@ void *deleteBack(node_t **head) {
             temp->prev->next = NULL;
         }
         data = temp->data;
-        free(temp);
     }
     return data;
     // END STUDENT IMPLEMENTATION
-
-    return data;
 }
 
 // move a node to the front of the list
 void moveNodeToFront(node_t **list, node_t **at) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*at == NULL || *at == *list)
         return;
@@ -283,7 +222,6 @@ void moveNodeToFront(node_t **list, node_t **at) {
 
 // move a node to the back of the list
 void moveNodeToBack(node_t **list, node_t **at) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (*at == NULL || *at == *list)
         return;
@@ -307,7 +245,6 @@ void moveNodeToBack(node_t **list, node_t **at) {
 
 // print the list using the given print function
 void printList(node_t *head, void (*printData)(void *)) {
-
     // BEGIN STUDENT IMPLEMENTATION
     if (head == NULL)
         return;
