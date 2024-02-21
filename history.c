@@ -10,24 +10,18 @@ static node_t *at; // current position in the history (for the up/down keys)
 int handleHistoryKeys(int count, int key) {
 
     // BEGIN STUDENT IMPLEMENTATION
+    if (history == NULL)
+        return 0;
 
-    if (!history) {
-        return 0; // if the history is empty, do nothing
-    }
-
-    // add the current line to the history if it is not already there
-    addToHistory(getData(at));
-
-    // go to the next or previous line in the history
     if (key == 'A') {
-        movePrev(&at);
+        if (at == NULL)
+            at = *history;
+        else if (getPrev(at) != NULL)
+            at = getPrev(at);
     } else if (key == 'B') {
-        moveNext(&at);
+        if (at != NULL && getNext(at) != NULL)
+            at = getNext(at);
     }
-
-    // replace the current line with the line from the history
-    replaceLine(getData(at));
-
     // END STUDENT IMPLEMENTATION
 
     return 0; // always returns 0
@@ -37,21 +31,11 @@ int handleHistoryKeys(int count, int key) {
 void addToHistory(const char *line) {
 
     // BEGIN STUDENT IMPLEMENTATION
+    if (history == NULL)
+        return;
 
-    if (!history) {
-        history = newList(); // if history is empty, create a new list
-    }
-
-    // add a new node if the line at the head is not empty and different from the new line
-    if (getData(*history) != NULL && strcmp(line, getData(*history)) != 0) {
-        insertFront(history, strdup(line));
-    } else if (getData(*history) == NULL) {
-        // replace the line at the head if it is empty and the next line is different from the new line
-        node_t *next = getNext(*history);
-        if (next != NULL && strcmp(line, getData(next)) != 0) {
-            setData(*history, strdup(line));
-        }
-    }
+    char *newLine = strdup(line);
+    insertBack(history, newLine);
     // END STUDENT IMPLEMENTATION
 }
 
@@ -59,8 +43,9 @@ void addToHistory(const char *line) {
 void initHistory() {
 
     // BEGIN STUDENT IMPLEMENTATION
-    history = NULL;
-    at = NULL;
+    if (history == NULL)
+        history = newList();
+    resetHistory();
     // END STUDENT IMPLEMENTATION
 }
 
@@ -68,7 +53,11 @@ void initHistory() {
 void freeHistory() {
 
     // BEGIN STUDENT IMPLEMENTATION
-freeList(&history, free);
+    if (history == NULL)
+        return;
+
+    freeList(history, NULL);
+    history = NULL;
     // END STUDENT IMPLEMENTATION
 }
 
@@ -76,7 +65,7 @@ freeList(&history, free);
 void resetHistory() {
 
     // BEGIN STUDENT IMPLEMENTATION
-at = history ? *history : NULL;
+ at = NULL;
     // END STUDENT IMPLEMENTATION
 }
 
@@ -84,9 +73,7 @@ at = history ? *history : NULL;
 static void printLine(void *line) {
 
     // BEGIN STUDENT IMPLEMENTATION
- if (line) {
-        printf("%s\n", (char *)line);
-    }
+printf("%s\n", (char *)line);
     // END STUDENT IMPLEMENTATION
 }
 
@@ -94,6 +81,9 @@ static void printLine(void *line) {
 void printHistory() {
 
     // BEGIN STUDENT IMPLEMENTATION
-printList(*history, printLine);
+    if (history == NULL)
+        return;
+
+    printList(*history, printLine);
     // END STUDENT IMPLEMENTATION
 }
